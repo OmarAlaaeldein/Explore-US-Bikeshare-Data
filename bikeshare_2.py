@@ -129,18 +129,30 @@ def user_stats(df):
 
     # Display counts of user types
     print(df.groupby("User Type")["User Type"].count())
+    try: # Exception handling of city with missing Gender column
+        # Display counts of gender
+        print(df.groupby("Gender")["Gender"].count())
 
-    # Display counts of gender
-    print(df.groupby("Gender")["Gender"].count())
-
-    # Display earliest, most recent, and most common year of birth
-    print("earliest year of birth is {}".format(int(df["Birth Year"].min())))
-    print("most recent year of birth is {}".format(int(df["Birth Year"].max())))
-    print("most common year of birth is {}".format(int(df["Birth Year"].mode())))
-
+    except KeyError:
+        print('Gender stats cannot be calculated because Gender column does not appear in the dataframe.')
+    try: # Exception handling of city with missing Birth Year column
+        # Display earliest, most recent, and most common year of birth
+        print("earliest year of birth is {}".format(int(df["Birth Year"].min())))
+        print("most recent year of birth is {}".format(int(df["Birth Year"].max())))
+        print("most common year of birth is {}".format(int(df["Birth Year"].mode())))
+    except KeyError:
+        print('Birth year cannot be calculated because Birth Year column does not appear in the dataframe.')
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
-
+def display_data(df):
+    view_data=input("Would you like to view 5 rows of individual trip data? Enter yes or no?\n")
+    start_loc = 0
+    while view_data=='yes':
+        start_time = time.time()
+        print(df.iloc[start_loc:start_loc+5,0:])
+        start_loc += 5
+        view_data = input("Do you wish to continue?\n").lower()
+        print("\nThis took %s seconds." % (time.time() - start_time))
 
 def main():
     while True:
@@ -151,7 +163,7 @@ def main():
         station_stats(df)
         trip_duration_stats(df)
         user_stats(df)
-
+        display_data(df)
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
             break
